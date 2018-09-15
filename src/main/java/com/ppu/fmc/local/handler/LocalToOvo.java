@@ -37,6 +37,8 @@ import com.ppu.fmc.local.domain.MacAddrUrl;
 import com.ppu.fmc.local.model.HostIpMap;
 import com.ppu.fmc.local.model.HostMacMap;
 import com.ppu.fmc.local.model.IpLocation;
+import com.ppu.fmc.local.repo.IBlacklistIpRepository;
+import com.ppu.fmc.local.repo.IBlacklistMARepository;
 import com.ppu.fmc.local.repo.IConnectionLogRepository;
 import com.ppu.fmc.local.repo.IMacAddrRepository;
 import com.ppu.fmc.local.repo.IMacAddrUrlRepository;
@@ -79,6 +81,12 @@ public class LocalToOvo {
 
 	@Autowired
 	IConnectionLogRepository connLogRepo;
+
+	@Autowired
+	IBlacklistIpRepository blacklistIpRepo;
+
+	@Autowired
+	IBlacklistMARepository blacklistMARepo;
 
 	@Autowired
 	private OVOUrlService ovoUrlService;
@@ -171,6 +179,17 @@ public class LocalToOvo {
 		// 2. tarik semua url yg ada di table connectionlog, simpan ke table MacAddrUrl
 		// dan via table macaddurl kirim ke OVO
 		for (MacAddr action : allMac) {
+			
+			// blacklist check
+			if (blacklistIpRepo.findOne(action.getIpaddr()) != null) {
+				log.warn("BLACKLISTed IP {}", action.getIpaddr());
+				continue;
+			}
+
+			if (blacklistMARepo.findOne(action.getMacaddr()) != null) {
+				log.warn("BLACKLISTed MacAddress {}", action.getMacaddr());
+				continue;
+			}
 
 			List<Object[]> items = searchAllUrlInFMCFor(action, fmcFetchRows);
 
