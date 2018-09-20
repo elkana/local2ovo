@@ -1,5 +1,8 @@
 package com.ppu.fmc;
 
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -9,13 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableAsync
 public class Local2ovoApplication implements CommandLineRunner {
 
 	private static final Logger log = LoggerFactory.getLogger(Local2ovoApplication.class);

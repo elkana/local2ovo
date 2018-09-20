@@ -63,7 +63,7 @@ public class LocalToOvo {
 	@Value("${local.data.url.keep.days:4}")
 	private int keepUrlDays;
 
-	@Value("${local.procbackdate.minutes:45}")
+	@Value("${local.procbackdate.minutes:15}")
 	private int backProcessedDateMinutes;
 	
 	@Value("${ovo.ws.url}")
@@ -188,6 +188,12 @@ public class LocalToOvo {
 
 			if (blacklistMARepo.findOne(action.getMacaddr()) != null) {
 				log.warn("BLACKLISTed MacAddress {}", action.getMacaddr());
+				continue;
+			}
+			
+			// sometimes krn prosesnya lama, bisa2 next macaddr udah ga terdaftar. so need to check again
+			if (macAddrRepo.findByMacaddr(action.getMacaddr()).isEmpty()) {
+				log.warn("Missing Mac Address {}", action.getMacaddr());
 				continue;
 			}
 
